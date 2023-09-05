@@ -1,8 +1,0 @@
-*.o
-*.out
-*.so
-*.p
-.vscode
-build
-**/CMakeLists.txt
-**/output
