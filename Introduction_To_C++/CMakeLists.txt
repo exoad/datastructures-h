@@ -1,4 +1,4 @@
-add_executable(dshintro hello_world.cc classwork_1.cc classwork_2.cc)
+add_executable(dshintro hello_world.cc classwork_1.cc classwork_2.cc classwork_3.cc)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(dshintro PRIVATE -Wall -Wextra -Wpedantic)
 elseif(MSVC)
