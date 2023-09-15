@@ -2,7 +2,6 @@
 /// \author Jack Meng
 /// \brief Converts HEX and Integers between different bases
 /// \date 2023-09-14
-
 #include <iostream>
 #include <cstring>
 
@@ -24,17 +23,14 @@ constexpr const char* HEX = "0123456789ABCDEF";
 string toBase(int decimal, int base)
 {
     string res = "";
-
     while (decimal > 0)
     {
         int r = decimal % base;
         res = to_string(r) + res;
         decimal /= base;
     }
-
     return res;
 }
-
 
 /// \brief Converts the argument integer from base 10 to base 16.
 /// \param decimal The argument integer in base 10
@@ -51,7 +47,6 @@ string toBase16(int decimal)
       return res;
 }
 
-
 /// \brief Converts the argument string from the argument base to base 10 (base <= 9)
 /// \param number The argument string in a supplied base
 /// \param base The base of the argument number (parameter supplied)
@@ -63,7 +58,6 @@ int toInteger(string number, int base)
       for(auto i = static_cast<int>(number.length() - 1); i >= 0; i--)
       {
             int val = number[i] - '0';
-
             if(val >= base || val < 0)
             {
                   cout << "Digit " << val << " not allowed for base " << base;
@@ -74,7 +68,6 @@ int toInteger(string number, int base)
       }
       return res;
 }
-
 
 /// \brief Converts hex to int
 /// \param c A hex char
@@ -108,7 +101,6 @@ int toInteger16(string number)
       }
       return res;
 }
-
 
 int main(void)
 {
