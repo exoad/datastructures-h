@@ -14,7 +14,7 @@ using namespace std;
 #define gl(STR,VAR) cout<<STR;cin>>VAR;nl
 #define rof(VAL,V1,V2) VAL>=V1&&VAL<=V2
 
-/// @brief Represents the avaliable symbols for hex
+/// \brief Represents the avaliable symbols for hex
 constexpr const char* HEX = "0123456789ABCDEF";
 
 /// \brief Converts the argument integer from base 10 to the argument base (base <= 9).
