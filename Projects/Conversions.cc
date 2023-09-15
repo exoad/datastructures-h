@@ -104,7 +104,7 @@ int toInteger16(string number)
 
 int main(void)
 {
-      char r = 'n';
+      string r = "n";
       for(;;) {
             cout << "Select an option:\n\t1 -> Convert integer from Base 10 to another base (base<=9)\n\t2 -> Convert integer from Base 10 to Base 16\n\t3 -> Convert a random based (base <= 9) value to base 10\n\t4 -> Convert HEX string from base 16 to base 10";
             nl
@@ -156,6 +156,6 @@ int main(void)
             }
             nl
             gl("Convert another? (y/n): ", r)
-            if(r == 'n' || r == 'N') break;
+            if(r != 'y' && r != 'Y') break;
       }
 }
