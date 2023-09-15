@@ -77,6 +77,9 @@ int toInteger(string number, int base)
 }
 
 
+/// @brief Converts hex to int
+/// @param c A hex char
+/// @return The specified int value
 inline int htoi(char c)
 {
       if(rof(c, '0', '9')) return c - '0';
