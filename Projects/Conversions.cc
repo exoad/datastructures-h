@@ -156,6 +156,6 @@ int main(void)
             }
             nl
             gl("Convert another? (y/n): ", r)
-            if(r != 'y' && r != 'Y') break;
+            if(r != "y" && r != "Y") break;
       }
 }
