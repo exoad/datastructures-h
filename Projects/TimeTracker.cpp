@@ -148,6 +148,7 @@ int main(void)
 	bare_test(Time(99).add(Time(83)), "00:03:02", "Test 5 for 99s+83s->HH:MM:SS")
 	bare_test(Time(0, 60, 0), "01:00:00", "Test 6 for 60m->HH:MM:SS")
 	bare_test(Time(400, 4, 0), "400:04:00", "Test 7 for 400,4,0->HH:MM:SS")
+	bare_test(Time(59,59,59).add(Time(1)), "60:00:00", "Test 8 for 59,59,59+1s")
 	/*
 	string n;
 	for(;;)
