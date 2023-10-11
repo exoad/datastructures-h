@@ -19,7 +19,7 @@
                     cin >> VAR;
 using namespace std;
 
-/// @brief Represents a collection of an expanded object because it can represent it in hours, minutes, and seconds
+/// \brief Represents a collection of an expanded object because it can represent it in hours, minutes, and seconds
 using TimeRecord = struct
 {
 	int hours;
@@ -27,8 +27,12 @@ using TimeRecord = struct
 	int seconds;
 };
 
+/// This macro makes sure the given time never goes under a negative value
 #define clamp_time(val) val<0?0:val
 
+/// This is the main time object.
+/// It is backed by a TimeRecord in order to have multiple representations
+/// like Minutes, Hours, and Seconds
 class Time
 {
 	private:
@@ -43,51 +47,56 @@ class Time
 		{
 		}
 
+		/// Get the internal representation
+		/// \return seconds
 		int getSeconds()
 		{
 			return seconds;
 		}
 
+		/// Setter for internal representation
+		/// \param seconds  seconds
+		void setSeconds(int s) // not useful
+		{
+			this->seconds = s;
+		}
+
+		/// Adds two time objects together (this+other)
+		/// \param other  The other time object to add from
+		/// \return The time added together
 		Time add(Time other) // adds two time objects together
 		{
 			return Time(this->seconds + other.seconds); // cascading??? just return a point back
 		}
 
+		/// Subtracts two time objects together (this-other). Additional checks are there to make
+		/// sure the value never reaches negative
+		/// \param other The other time object to add from
+		/// \return  The time added together
 		Time subtract(Time other) // subtracts two time objects. this - other
 		{
 			return Time(clamp_time(this->seconds - other.seconds));
 		}
 
+		/// Increases the time by a certain set amount of values
+		/// \param h Hours
+		/// \param m Minutes
+		/// \param s Seconds
+		/// \return A modified time with the increased quantities
 		Time increaseBy(int h, int m, int s) // increase the time instance by a set quantity
 		{
 			return increaseBy(
 					h * 3600 + m * 60 + s); // strips the individual hours, minutes down into seconds and then added.
 		}
 
+		/// Increases the Time using just seconds
+		/// \param s Seconds to increase by
+		/// \return The modified object
+		/// \related increaseBy(int, int, int)
 		Time increaseBy(int s)
 		{
-			return Time(this->seconds + s);
+			return increaseBy(0, 0, s);
 		}
-
-		/// Setter for the hours param
-		/// \param h Overwrites the current with this parameter
-		void setHour(int h)
-		{
-			this->seconds = h * 3600; // sets the current time in seconds to a given hours unit (converted)
-		}
-
-		/// Setter for the seconds param
-		/// \param s Overwrites the current time with this parameter
-		void setSecond(int s)
-		{
-			this->seconds = s; // sets the current time to a new seconds value
-		}
-
-		void setMinute(int m)
-		{
-			this->seconds = m * 60; // sets the current time to a new minutes value (converted)
-		}
-
 };
 
 /// \brief Generates the appropriate hours, minutes, and seconds from a time obj. Time only holds a singular unit of seconds to represent time!
@@ -117,30 +126,56 @@ string formatRecord(TimeRecord record)
 	return format;
 }
 
-Time askTimeObj()
+/// Asks the user to create a Time Object, this is basically the same askTimeRecord()
+/// except that it returns a Time object instead of a Record
+/// \return A created Time object
+inline Time askTimeObj()
 {
 	gl("Create a Time Object:\n\t1. Just seconds\n\t2. Hours, minutes, and seconds\nEnter your option: ", int, time_select)
-	Time timeObj {0};
+	Time timeObj {0}; // init to 0
 	if (time_select == 1) // user select to enter in just seconds
 	{
-		gl("Enter seconds: ", int, userSeconds)
+		gl("Enter seconds: ", int, userSeconds) // get userSeconds as just seconds
 		timeObj = Time(userSeconds);
+		askTimeRecord
 	} else if (time_select == 2) // user select to enter all accepted values
 	{
+		// all accepted values for input
 		gl("Enter seconds: ", int, userSeconds)
 		gl("Enter minutes: ", int, userMinutes)
 		gl("Enter hours: ", int, userHours)
-
 		timeObj = Time(userHours, userMinutes, userSeconds);
 	}
 	return timeObj;
 }
 
-#define test(CONDITION, MESSAGE) if(!(CONDITION)){cout<<"[FAILED]\t"<<MESSAGE;nl exit(-1);}else{cout<<"[PASSED]\t"<<MESSAGE;nl}
+/// Asks the user to create a Time Record and is mostly used for increaseBy
+/// \return A created Time record
+inline TimeRecord askTimeRecord()
+{
+	gl("Create a Time Record:\n\t1. Just seconds\n\t2. Hours, minutes, and seconds\nEnter your option: ", int, time_select)
+	TimeRecord timeRecord;
+	if (time_select == 1)
+	{
+		gl("Enter seconds: ", int, userSeconds) // get userSeconds as just seconds
+		timeRecord = {0, 0, userSeconds}; // everything else is zero
+	} else if (time_select == 2)
+	{
+		// all accepted values for input
+		gl("Enter seconds: ", int, userSeconds)
+		gl("Enter minutes: ", int, userMinutes)
+		gl("Enter hours: ", int, userHours)
+		timeRecord = {userHours, userMinutes, userSeconds}; // fill out all of the avaliable fields
+	}
+	return timeRecord;
+}
+
+#define LOOP for(;;) // macro for just a while(true) but less characters
 #define bare_test(OBJ, AGAINST, MESSAGE) if(formatRecord(expandTime(OBJ))!=AGAINST){cout<<"[FAILED]\t"<<MESSAGE<<"\t"<<formatRecord(expandTime(OBJ));nl exit(-1);}else{cout<<"[PASSED]\t"<<MESSAGE<<"\t"<<formatRecord(expandTime(OBJ));nl}
 
 int main(void)
 {
+	// unit tests
 	bare_test(Time(4, 40, 3), "04:40:03", "Test 1 for 4,30,3 -> 04:40:03")
 	bare_test(Time(4, 0, 5).add(Time(18, 0, 5)), "22:00:10", "Test 2 for 4,0,5 + 18,0,5 = 22:00:10")
 	bare_test(Time(12345678), "3429:21:18", "Test 3 this->seconds - other.seconds < 0 ? 0 : this->seconds - other.seconds for 12345678 -> HH:MM:SS")
@@ -148,34 +183,41 @@ int main(void)
 	bare_test(Time(99).add(Time(83)), "00:03:02", "Test 5 for 99s+83s->HH:MM:SS")
 	bare_test(Time(0, 60, 0), "01:00:00", "Test 6 for 60m->HH:MM:SS")
 	bare_test(Time(400, 4, 0), "400:04:00", "Test 7 for 400,4,0->HH:MM:SS")
-	bare_test(Time(59,59,59).add(Time(1)), "60:00:00", "Test 8 for 59,59,59+1s")
-	/*
+	bare_test(Time(59, 59, 59).add(Time(1)), "60:00:00", "Test 8 for 59,59,59+1s")
+	nl
+	nl
+	nl
+	// now we get input
 	string n;
-	for(;;)
+	LOOP
 	{
+		// first ask user to create a time object
 		auto originalTime = askTimeObj();
 		int operationOption = 0;
-		for(;;)
+		LOOP
 		{
+			// continuously ask the user what they want to do
 			nl
-			sl("What do you want to do next?\n\t1-> Subtract from another time object\n\t2-> Add from another time object\n\t3-> Increase the time object by (Hours, Minutes, Seconds)\n\t4-> Increase the time by seconds\n\t5-> Display the current time object in HH:MM:SS format\n\tOther numbers. STOP\nEnter your choice: ", operationOption)
-			if(operationOption == 1)
+			sl("What do you want to do next?\n\t1-> Subtract from another time object\n\t2-> Add from another time object\n\t3-> Increase the time object\n\t4-> Display the current time object in HH:MM:SS format\n\tOther numbers. STOP\nEnter your choice: ", operationOption)
+			if (operationOption == 1) // ask the user if they want to subtract from another time object
 			{
-
-			}
-			else if(operationOption == 2)
+				auto nowTime = askTimeObj(); // ask user to create another time object
+				originalTime = originalTime.subtract(nowTime); // reassign it
+				cout << "Subtracted time:   " << formatRecord(expandTime(originalTime))
+					 << endl; // return the formatted string
+			} else if (operationOption == 2) // add -> timeOKbj
 			{
-
-			}
-			else if(operationOption == 3)
+				auto nowTime = askTimeObj(); // ask user to create another time object
+				originalTime = originalTime.add(nowTime); // reassign it
+				cout << "Added time:   " << formatRecord(expandTime(originalTime))
+					 << endl; // return the formatted string
+			} else if (operationOption == 3) // increaseBy -> timeRecord
 			{
-
-			}
-			else if (operationOption == 4)
-			{
-
-			}
-			else if(operationOption == 5)
+				auto nowRecord = askTimeRecord(); // ask user to create another time record
+				originalTime = originalTime.increaseBy(nowRecord.hours, nowRecord.minutes, nowRecord.seconds); // reassign it
+				cout << "Increased time: " << formatRecord(expandTime(originalTime))
+					 << endl; // return the formatted string
+			} else if (operationOption == 4) // if the user just want to see the current time
 				cout << "Current Time in HH:MM:SS format:\n" << formatRecord(expandTime(originalTime)) << endl;
 			else break;
 		}
@@ -183,7 +225,6 @@ int main(void)
 
 		nl
 		sl("Do another? (y/n): ", n)
-		if(n != "Y" || n != "y") break;
+		if (n != "Y" || n != "y") break;
 	}
-	*/
 }
