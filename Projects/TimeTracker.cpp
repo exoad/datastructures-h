@@ -25,10 +25,8 @@ using TimeRecord = struct
 	int hours;
 	int minutes;
 	int seconds;
+	bool is_before;
 };
-
-/// This macro makes sure the given time never goes under a negative value
-#define clamp_time(val) val<0?0:val
 
 /// This is the main time object.
 /// It is backed by a TimeRecord in order to have multiple representations
@@ -39,11 +37,11 @@ class Time
 		int seconds; // singular unit, easier to work with, might overflow though (int64_t!)
 
 	public:
-		explicit Time(int s) : seconds(clamp_time(s))
+		explicit Time(int s) : seconds(s)
 		{
 		}
 
-		Time(int h, int m, int s) : seconds(clamp_time(h * 3600 + m * 60 + s))
+		Time(int h, int m, int s) : seconds(h * 3600 + m * 60 + s)
 		{
 		}
 
@@ -75,7 +73,7 @@ class Time
 		/// \return  The time added together
 		Time subtract(Time other) // subtracts two time objects. this - other
 		{
-			return Time(clamp_time(this->seconds - other.seconds));
+			return Time(this->seconds - other.seconds);
 		}
 
 		/// Increases the time by a certain set amount of values
@@ -104,8 +102,7 @@ class Time
 /// \return A record representing hours, minutes, seconds from the time object
 static TimeRecord expandTime(Time obj)
 {
-	return {obj.getSeconds() / 3600, (obj.getSeconds() % 3600) / 60, obj.getSeconds() %
-																	 60}; // basically we do what the constructor of the Time class did and separate the time back into components
+	return {obj.getSeconds() / 3600, (obj.getSeconds() % 3600) / 60, obj.getSeconds() % 60, obj.getSeconds() < 0}; // basically we do what the constructor of the Time class did and separate the time back into components
 }
 
 ///
@@ -113,7 +110,13 @@ static TimeRecord expandTime(Time obj)
 /// \return
 string formatRecord(TimeRecord record)
 {
+	// we make sure none of the time are negative so we can just append a final "-" at the beginning of the output
+	record.hours = abs(record.hours);
+	record.minutes = abs(record.minutes);
+	record.seconds = abs(record.seconds);
 	string format;
+	if(record.hours * 3600 + record.minutes * 60 + record.seconds < 0)
+		format += "-";
 	if (record.hours < 10) // if we need to use more than a single digit for the hour's place
 		format += "0";
 	format += to_string(record.hours) + ":";
@@ -137,7 +140,6 @@ inline Time askTimeObj()
 	{
 		gl("Enter seconds: ", int, userSeconds) // get userSeconds as just seconds
 		timeObj = Time(userSeconds);
-		askTimeRecord
 	} else if (time_select == 2) // user select to enter all accepted values
 	{
 		// all accepted values for input
@@ -153,6 +155,7 @@ inline Time askTimeObj()
 /// \return A created Time record
 inline TimeRecord askTimeRecord()
 {
+	// prompt the user to enter for a time record, exactly like a TimeObj
 	gl("Create a Time Record:\n\t1. Just seconds\n\t2. Hours, minutes, and seconds\nEnter your option: ", int, time_select)
 	TimeRecord timeRecord;
 	if (time_select == 1)
@@ -171,11 +174,13 @@ inline TimeRecord askTimeRecord()
 }
 
 #define LOOP for(;;) // macro for just a while(true) but less characters
+// this macro is just something i used to test my code without having to spend hours going thru the user input and automating
+// my testing process
 #define bare_test(OBJ, AGAINST, MESSAGE) if(formatRecord(expandTime(OBJ))!=AGAINST){cout<<"[FAILED]\t"<<MESSAGE<<"\t"<<formatRecord(expandTime(OBJ));nl exit(-1);}else{cout<<"[PASSED]\t"<<MESSAGE<<"\t"<<formatRecord(expandTime(OBJ));nl}
 
 int main(void)
 {
-	// unit tests
+	// unit tests - basically automated tests
 	bare_test(Time(4, 40, 3), "04:40:03", "Test 1 for 4,30,3 -> 04:40:03")
 	bare_test(Time(4, 0, 5).add(Time(18, 0, 5)), "22:00:10", "Test 2 for 4,0,5 + 18,0,5 = 22:00:10")
 	bare_test(Time(12345678), "3429:21:18", "Test 3 this->seconds - other.seconds < 0 ? 0 : this->seconds - other.seconds for 12345678 -> HH:MM:SS")
@@ -184,6 +189,7 @@ int main(void)
 	bare_test(Time(0, 60, 0), "01:00:00", "Test 6 for 60m->HH:MM:SS")
 	bare_test(Time(400, 4, 0), "400:04:00", "Test 7 for 400,4,0->HH:MM:SS")
 	bare_test(Time(59, 59, 59).add(Time(1)), "60:00:00", "Test 8 for 59,59,59+1s")
+	bare_test(Time(99, 59, 59).add(Time(1)), "100:00:00", "Test 9 for  99,59,59+1s")
 	nl
 	nl
 	nl
