@@ -111,12 +111,13 @@ static TimeRecord expandTime(Time obj)
 string formatRecord(TimeRecord record)
 {
 	// we make sure none of the time are negative so we can just append a final "-" at the beginning of the output
-	record.hours = abs(record.hours);
-	record.minutes = abs(record.minutes);
-	record.seconds = abs(record.seconds);
+
 	string format;
 	if(record.hours * 3600 + record.minutes * 60 + record.seconds < 0)
 		format += "-";
+	record.hours = abs(record.hours);
+	record.minutes = abs(record.minutes);
+	record.seconds = abs(record.seconds);
 	if (record.hours < 10) // if we need to use more than a single digit for the hour's place
 		format += "0";
 	format += to_string(record.hours) + ":";
@@ -190,6 +191,7 @@ int main(void)
 	bare_test(Time(400, 4, 0), "400:04:00", "Test 7 for 400,4,0->HH:MM:SS")
 	bare_test(Time(59, 59, 59).add(Time(1)), "60:00:00", "Test 8 for 59,59,59+1s")
 	bare_test(Time(99, 59, 59).add(Time(1)), "100:00:00", "Test 9 for  99,59,59+1s")
+	bare_test(Time(0, 10, 0).subtract(Time(0, 30, 0)), "-00:20:00", "Test 10 for 0,10,0-0,30,0")
 	nl
 	nl
 	nl
