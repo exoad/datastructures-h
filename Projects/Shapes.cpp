@@ -19,7 +19,6 @@ using namespace std;
                     cin >> VAR;
 #define LOOP for(;;) // macro for just a while(true) but less characters
 
-
 /// @brief  This is the class inherited by Rectangle and Triangle to represent their base
 /// attributes, such as width and height.
 class Polygon
