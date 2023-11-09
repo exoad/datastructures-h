@@ -118,11 +118,12 @@ class Complex
                   return RAD_TO_DEG(acos(dotProduct(other)/(norm()*other.norm())));
             }
 
-            /// @brief The to_string conversion of this complex number using the "++" operator
+            /// @brief The to_string conversion of this complex number using the "<<" operator
             /// @return The a+bi form
-            string operator ++ ()
+            friend std::ostream& operator<<(std::ostream& os, const Complex& obj)
             {
-                  return to_string(a)+"+"+to_string(b)+"i";
+                  os << obj.a << "+" << obj.b << "i";
+                  return os;
             }
 
             /// @brief Adds two complex numbers together using operator overloading
@@ -189,40 +190,40 @@ int main(void)
                         {
                               cout << "Dot Product\n";
                               auto other = createObj();
-                              cout << "\nDot Product Result of " << (++initialNum) << "*" << (++other) << "\nResultant: " << (initialNum*other) << endl;
+                              cout << "\nDot Product Result of " << initialNum << "*" << other << "\nResultant: " << (initialNum*other) << endl;
                               break;
                         }
                         case 2: // scalar product
                         {
                               cout << "Scalar Product\n";
                               gl("Enter the constant: ", double, k)
-                              cout << "\nScalar Product Result of " << (++initialNum) << "*" << k << "\nResultant: " << ++(initialNum*k) << endl;
+                              cout << "\nScalar Product Result of " << initialNum << "*" << k << "\nResultant: " << (initialNum*k) << endl;
                               break;
                         }
                         case 3: // add another complex number
                         {
                               cout << "Add another complex number\n";
                               auto other1 = createObj();
-                              cout << "\nAddition of " << (++initialNum) << "+" << (++other1) << "\nResultant: " << ++(initialNum+other1) << endl;
+                              cout << "\nAddition of " << initialNum << "+" << other1 << "\nResultant: " << (initialNum+other1) << endl;
                               break;
                         }
                         case 4: // subtract another complex number
                         {
                               cout << "Subtract another complex number\n";
                               auto other3 = createObj();
-                              cout << "\nSubtraction of " << (++initialNum) << "-" << (++other3) << "\nResultant: " << ++(initialNum-other3) << endl;
+                              cout << "\nSubtraction of " << initialNum << "-" << other3 << "\nResultant: " << (initialNum-other3) << endl;
                               break;
                         }
                         case 5: // divide by another complex number dotProduct(1/(other1))
                         {
                               cout << "Divide by another complex number\n";
                               auto other2 = createObj();
-                              cout << "\nDivision of " << (++initialNum) << "/" << (++other2) << "\nResultant: " << (initialNum/other2) << endl;
+                              cout << "\nDivision of " << initialNum << "/" << other2 << "\nResultant: " << (initialNum/other2) << endl;
                               break;
                         }
                         case 6: // displays the current value
                         {
-                              cout << "Current value: " << ++initialNum << endl;
+                              cout << "Current value: " << initialNum << endl;
                               break;
                         }
                         default:
