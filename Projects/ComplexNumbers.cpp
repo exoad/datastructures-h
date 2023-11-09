@@ -56,20 +56,6 @@ class Complex
                   return Complex(a, -b);
             }
 
-            /// @brief Sets the real number
-            /// @param value A different value to change to
-            void setReal(double value)
-            {
-                  this->a=value;
-            }
-
-            /// @brief Sets the imaginary number
-            /// @param value A different value to change to
-            void setImag(double value)
-            {
-                  this->b=value;
-            }
-
             /// @brief Magnitude, norm of the complex number???
             /// @return Norm (magnitude)
             double norm()
@@ -122,7 +108,7 @@ class Complex
             /// @return The a+bi form
             friend std::ostream& operator<<(std::ostream& os, const Complex& obj)
             {
-                  os << obj.a << "+" << obj.b << "i";
+                  os << obj.a << (obj.b < 0 ? "-" : "+") << obj.b << "i";
                   return os;
             }
 
@@ -143,14 +129,34 @@ class Complex
                   return scalarProduct(value);
             }
 
+
+            /// @brief Multiplies two complex numbers two get their dot product
+            /// @param complex The other complex number
+            /// @return The dot product of these two complex numbers
             double operator * (Complex const& complex)
             {
                   return dotProduct(complex);
             }
 
-            double operator / (Complex const& value)
+            /// @brief Divides two complex numbers using operator overloading
+            /// @param other The other complex number
+            /// @return The resultant complex number
+            Complex operator / (Complex const& other)
             {
-                  return dotProduct(Complex(1/value.a, 1/value.b));
+                  return Complex(
+                              ((a * other.a) + (b * other.b)) / ((other.a * other.a) + (other.b * other.b)),
+                              ((b * other.a) - (a * other.b)) / ((other.a * other.a) + (other.b * other.b))
+                  );
+            }
+
+            /// @brief Divides this complex number by a constant
+            /// @param value The constant
+            /// @return The resultant complex number
+            Complex operator / (double const& value)
+            {
+                  a/=value;
+                  b/=value;
+                  return *this;
             }
 
             /// @brief Subtracts two vectors using operating overloading
@@ -159,6 +165,14 @@ class Complex
             Complex operator - (Complex const& complex)
             {
                   return Complex(a-complex.a, b-complex.b);
+            }
+
+            /// @brief Checks if two complex numbers are equal
+            /// @param complex The other complex number
+            /// @return True if they are equal, false otherwise
+            bool operator == (Complex const& complex)
+            {
+                  return a==complex.a && b==complex.b;
             }
 };
 
@@ -183,7 +197,7 @@ int main(void)
             auto initialNum = createObj();
             LOOP
             {
-                  gl("Enter an operation:\n1. Dot product\n2. Scalar Product\n3. Add another complex number\n4. Subtract another complex number\n5. Divide by another complex number\n6. View current value\nAll other numbers: Stop\n\nChoice: ", int, choice)
+                  gl("Enter an operation:\n1. Dot product\n2. Scalar Product\n3. Add another complex number\n4. Subtract another complex number\n5. Divide by another complex number\n6. Divide by a constant\n7. View current value\nAll other numbers: Stop\n\nChoice: ", int, choice)
                   switch(choice)
                   {
                         case 1: // dot product
@@ -221,7 +235,14 @@ int main(void)
                               cout << "\nDivision of " << initialNum << "/" << other2 << "\nResultant: " << (initialNum/other2) << endl;
                               break;
                         }
-                        case 6: // displays the current value
+                        case 6:
+                        {
+                              cout << "Divide by a constant\n";
+                              gl("Enter the constant: ", double, k)
+                              cout << "\nDivision of " << initialNum << "/" << k << "\nResultant: " << (initialNum/k) << endl;
+                              break;
+                        }
+                        case 7: // displays the current value
                         {
                               cout << "Current value: " << initialNum << endl;
                               break;
