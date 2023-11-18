@@ -133,9 +133,12 @@ class Complex
             /// @brief Multiplies two complex numbers two get their dot product
             /// @param complex The other complex number
             /// @return The dot product of these two complex numbers
-            double operator * (Complex const& complex)
+            Complex operator * (Complex const& complex)
             {
-                  return dotProduct(complex);
+                  return Complex(
+                                a*complex.a-b*complex.b, 
+                                a*complex.b+b*complex.a
+                  );
             }
 
             /// @brief Divides two complex numbers using operator overloading
@@ -144,8 +147,8 @@ class Complex
             Complex operator / (Complex const& other)
             {
                   return Complex(
-                              ((a * other.a) + (b * other.b)) / ((other.a * other.a) + (other.b * other.b)),
-                              ((b * other.a) - (a * other.b)) / ((other.a * other.a) + (other.b * other.b))
+                              ((a*other.a)+(b*other.b))/((other.a*other.a)+(other.b*other.b)),
+                              ((b*other.a)-(a*other.b))/((other.a*other.a)+(other.b*other.b))
                   );
             }
 
@@ -197,14 +200,14 @@ int main(void)
             auto initialNum = createObj();
             LOOP
             {
-                  gl("Enter an operation:\n1. Dot product\n2. Scalar Product\n3. Add another complex number\n4. Subtract another complex number\n5. Divide by another complex number\n6. Divide by a constant\n7. View current value\nAll other numbers: Stop\n\nChoice: ", int, choice)
+                  gl("Enter an operation:\n1. Dot product\n2. Scalar Product\n3. Add another complex number\n4. Subtract another complex number\n5. Divide by another complex number\n6. Divide by a constant\n7. View current value\n8. Dot product\n9. Check equality of two complex numbers\nAll other numbers: Stop\n\nChoice: ", int, choice)
                   switch(choice)
                   {
-                        case 1: // dot product
+                        case 1: // product
                         {
-                              cout << "Dot Product\n";
+                              cout << "Multiply two complex numbers\n";
                               auto other = createObj();
-                              cout << "\nDot Product Result of " << initialNum << "*" << other << "\nResultant: " << (initialNum*other) << endl;
+                              cout << "\n Result of " << initialNum << "*" << other << "\nResultant: " << (initialNum*other) << endl;
                               break;
                         }
                         case 2: // scalar product
@@ -235,7 +238,7 @@ int main(void)
                               cout << "\nDivision of " << initialNum << "/" << other2 << "\nResultant: " << (initialNum/other2) << endl;
                               break;
                         }
-                        case 6:
+                        case 6: // divide by a constant
                         {
                               cout << "Divide by a constant\n";
                               gl("Enter the constant: ", double, k)
@@ -246,6 +249,16 @@ int main(void)
                         {
                               cout << "Current value: " << initialNum << endl;
                               break;
+                        }
+                        case 8: // dot product
+                        {
+                              auto other6 = createObj();
+                              cout << "\nDot product of " << initialNum << " and " << other6 << "\nResultant: " << (initialNum.dotProduct(other6)) << endl;
+                        }
+                        case 9:
+                        {
+                              auto other89 = createObj();
+                              cout << "\nEquality of " << initialNum << " and " << other89 << "\nResultant: " << (initialNum==other89) << endl;
                         }
                         default:
                               break;
