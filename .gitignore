@@ -7,3 +7,6 @@ build
 **/output
 .idea
 cmake-build-debug
+
+# current assignment
+Projects/Duration.cpp
