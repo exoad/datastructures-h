@@ -107,6 +107,37 @@ class Duration
     }
 
     /**
+     * @brief Construct a new Duration object
+     *
+     * @param h hours
+     * @param m minutes
+     */
+    Duration(int h, int m)
+    {
+      computeTotalSeconds(
+        clampZero(h),
+        clampZero(m),
+        0
+      );
+      syncTime();
+    }
+
+    /**
+     * @brief Construct a new Duration object
+     *
+     * @param h hours
+     */
+    Duration(int h)
+    {
+      computeTotalSeconds(
+        h,
+        0,
+        0
+      );
+      syncTime();
+    }
+
+    /**
      * @brief Adds two durations
      *
      * @param other Duration
@@ -167,14 +198,12 @@ class Duration
      * @brief Divides a duration by another duration
      *
      * @param other Duration
-     * @return Duration quotient of the two durations
+     * @return ratio of the two durations
      */
-    Duration operator/(Duration const& other)
+    double operator/(Duration const& other)
     {
       assert(other.totalSeconds!=0); // please dont do this :(
-      return Duration(
-        this->totalSeconds/other.totalSeconds
-      );
+      return this->totalSeconds/other.totalSeconds;
     }
 
     /**
@@ -213,6 +242,11 @@ class Duration
     }
 };
 
+/**
+ * @brief Asks the user for the duration components
+ *
+ * @return Duration the duration object
+ */
 inline Duration askDurationObj()
 {
   gl("Enter hours: ", int, hours)
@@ -225,6 +259,62 @@ int main(void)
 {
   // ref: https://planetcalc.com/65/
   USER_LOOP({
-    cout << (Duration(30, 60, 30)+Duration(30,30,30)); // 31:01:30+30:30:30=61:31:60=62:33:00
+    // ask the user for what they want
+    gl("Options:"
+       "\n\t1. Add two Duration objects"
+       "\n\t2. Subtract two Duration objects"
+       "\n\t3. Divide a Duration object by another to get the ratio"
+       "\n\t4. Multiply a Duration object by a constant"
+       "\n\t5. Divide a Duration object by a constant"
+       "\n\t6. Print current Duration object"
+       "\n\t7. Randomize the current Duration object"
+       "\n\t8. Exit",
+       int, option
+    ) // get the option
+    Duration original=askDurationObj();
+    switch(option) // check against the possible options
+    {
+      case 1: // add two durations
+      {
+        Duration other=askDurationObj();
+        cout << original << "+" << other << "=" << original+other;
+        break;
+      }
+      case 2: // subtract two durations
+      {
+        Duration other=askDurationObj();
+        cout << original << "-" << other << "=" << original-other;
+        break;
+      }
+      case 3: // divide two durations
+      {
+        Duration other=askDurationObj();
+        cout << original << "/" << other << "=" << original/other;
+        break;
+      }
+      case 4: // multiply a duration by a constant
+      {
+        gl("Enter constant: ", int, constant)
+        cout << original << "*" << constant << "=" << original*constant;
+        break;
+      }
+      case 5: // divide a duration by a constant
+      {
+        gl("Enter constant: ", int, constant)
+        cout << original << "/" << constant << "=" << original/constant;
+        break;
+      }
+      case 6: // print the duration
+      {
+        cout << original;
+        break;
+      }
+      case 7: // randomize the duration
+      {
+        original.randomize();
+        cout << "Randomized: " << original;
+        break;
+      }
+    }
   })
 }
