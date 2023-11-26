@@ -10,3 +10,6 @@ cmake-build-debug
 *.exe
 CMakeCache.txt
 CMakeFiles
+*.cmake
+*.json
+Makefile
