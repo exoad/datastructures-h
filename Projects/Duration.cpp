@@ -65,28 +65,11 @@ class Duration
     int hours = 0;
     int seconds = 0;
 
-    int totalSeconds;
-
-  // private methods for computing total seconds and syncing time with the other attributes
-    void computeTotalSeconds(int h, int m, int s)
+  // helper function for computing total seconds and making my life easier (maybe)
+    int computeTotalSeconds() const
     {
-      totalSeconds=h*3600+m*60+s;
+      return hours*3600+minutes*60+seconds;
     }
-  // syncing time with the other private members
-    void syncTime()
-    {
-      hours=totalSeconds/3600;
-      minutes=(totalSeconds%3600)/60;
-      seconds=totalSeconds%60;
-    }
-
-  // private constructor for setting by total seconds (for internal use)
-    Duration(int totalSeconds)
-    {
-      this->totalSeconds=totalSeconds;
-      syncTime();
-    }
-
 
   public:
     /**
@@ -96,14 +79,8 @@ class Duration
      * @param m minutes
      * @param s seconds
      */
-    Duration(int h, int m, int s)
+    Duration(int h, int m, int s) : hours(h), minutes(h), seconds(s)
     {
-      computeTotalSeconds(
-        clampZero(h),
-        clampZero(m),
-        clampZero(s)
-      );
-      syncTime();
     }
 
     /**
@@ -112,14 +89,8 @@ class Duration
      * @param h hours
      * @param m minutes
      */
-    Duration(int h, int m)
+    Duration(int h, int m) : hours(h), minutes(h), seconds(0)
     {
-      computeTotalSeconds(
-        clampZero(h),
-        clampZero(m),
-        0
-      );
-      syncTime();
     }
 
     /**
@@ -127,14 +98,8 @@ class Duration
      *
      * @param h hours
      */
-    Duration(int h)
+    Duration(int h) : hours(h), minutes(0), seconds(0)
     {
-      computeTotalSeconds(
-        h,
-        0,
-        0
-      );
-      syncTime();
     }
 
     /**
@@ -145,8 +110,11 @@ class Duration
      */
     Duration operator+(Duration const& other)
     {
+      int totalSeconds=this->computeTotalSeconds()+other.computeTotalSeconds();
       return Duration(
-        this->totalSeconds+other.totalSeconds
+        totalSeconds/3600,
+        (totalSeconds%3600)/60,
+        totalSeconds%60
       );
     }
 
@@ -158,8 +126,11 @@ class Duration
      */
     Duration operator-(Duration const& other)
     {
+      int totalSeconds=this->computeTotalSeconds()-other.computeTotalSeconds();
       return Duration(
-        clampZero(this->totalSeconds-other.totalSeconds)
+        totalSeconds/3600,
+        (totalSeconds%3600)/60,
+        totalSeconds%60
       );
     }
 
@@ -202,8 +173,7 @@ class Duration
      */
     double operator/(Duration const& other)
     {
-      assert(other.totalSeconds!=0); // please dont do this :(
-      return this->totalSeconds/other.totalSeconds;
+      return (double)this->computeTotalSeconds()/other.computeTotalSeconds();
     }
 
     /**
@@ -268,7 +238,7 @@ int main(void)
        "\n\t5. Divide a Duration object by a constant"
        "\n\t6. Print current Duration object"
        "\n\t7. Randomize the current Duration object"
-       "\n\t8. Exit",
+       "\n\t8. Exit\n",
        int, option
     ) // get the option
     Duration original=askDurationObj();
@@ -277,7 +247,7 @@ int main(void)
       case 1: // add two durations
       {
         Duration other=askDurationObj();
-        cout << original << "+" << other << "=" << original+other;
+        cout << original << "+" << other << "=" << (original+other);
         break;
       }
       case 2: // subtract two durations
