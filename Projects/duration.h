@@ -11,6 +11,7 @@ class Duration
         Duration(int h, int m, int s);
         Duration(int h, int m);
         Duration(int h);
+        Duration();
         Duration operator+(Duration const&);
         Duration operator-(Duration const&);
         Duration operator*(int const&);
@@ -45,6 +46,11 @@ inline string formatTwoSpaces(int i)
     {
       return Duration::hours*3600+Duration::minutes*60+Duration::seconds;
     }
+
+    Duration::Duration() : hours(0), minutes(0), seconds(0) 
+{
+  
+}
 
     /**
      * @brief Construct a new Duration object
