@@ -106,7 +106,7 @@ inline string formatTwoSpaces(int i)
      */
     Duration Duration::operator-(Duration const& other)
     {
-      int totalSeconds=this->computeTotalSeconds()-other.computeTotalSeconds();
+      int totalSeconds=clampZero(this->computeTotalSeconds()-other.computeTotalSeconds());
       return Duration(
         totalSeconds/3600,
         (totalSeconds%3600)/60,
