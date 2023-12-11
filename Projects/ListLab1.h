@@ -14,15 +14,39 @@ class ListNode
         ListNode* copyNode(ListNode* arg);
         ListNode* copyList(ListNode* arg);
         ListNode* rest(ListNode* h);
-        string first(ListNode* head);
-        string second(ListNode* head);
-        ListNode* copyOfLast(ListNode* head);
-        ListNode* pointerToLast(ListNode* head);
-        ListNode* insertFirst(ListNode* head, string arg);
-        ListNode* insertLast(ListNode* head, string arg);
         string getValue();
         ListNode* getNext();
 };
+
+string first(ListNode* head)
+{
+    
+}
+
+string second(ListNode* head)
+{
+    
+}
+
+ListNode* copyOfLast(ListNode* head)
+{
+    
+}
+
+ListNode* pointerToLast(ListNode* head)
+{
+    
+}
+
+ListNode* insertFirst(ListNode* head, string arg)
+{
+    
+}
+
+ListNode* insertLast(ListNode* head, string arg)
+{
+    
+}
 
 ListNode::ListNode(string value,ListNode* next) : value(value), next(next)
 {
