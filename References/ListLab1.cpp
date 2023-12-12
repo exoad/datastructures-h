@@ -1,5 +1,5 @@
 #include <iostream>
-#include "ListLab1.h"
+#include "../Projects/ListLab1.h"
 using namespace std;
 
 void printMe(ListNode* head)
@@ -50,6 +50,6 @@ int main()
 	theRest = head->insertFirst(theRest, x);
 	theRest = head->insertLast(theRest, x);
 	printMe(theRest);
-	
+
 	return 0;
 }

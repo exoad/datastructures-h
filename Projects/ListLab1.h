@@ -1,77 +1,102 @@
 #pragma once
 
+/**
+ * @file ListLab1.h
+ * @author Jack Meng
+ * @brief Demonstrates some basics with LinkedLists
+ * @date 2023-12-12
+ */
+
+#ifndef LISTBLAB1_H
+#define LISTBLAB1_H
+
 #include <cstring>
 
 using namespace std;
 
-class ListNode 
+/**
+ * @brief The ListNode class
+ *
+ */
+class ListNode
 {
     private:
+        /**
+         * @brief Value currently held
+        */
         string value;
-        ListNode* next;  
+        /**
+         * @brief The next ListNode
+         */
+        ListNode* next;
     public:
-        ListNode(string value,ListNode* next);
-        ListNode* copyNode(ListNode* arg);
-        ListNode* copyList(ListNode* arg);
-        ListNode* rest(ListNode* h);
+        ListNode(string,ListNode*);
+        ListNode* copyNode(ListNode*);
+        ListNode* copyList(ListNode*);
+        ListNode* rest(ListNode*);
+        ListNode* pointerToLast(ListNode*);
+        ListNode* copyOfLast(ListNode*);
+        ListNode* insertFirst(ListNode*,string);
+        ListNode* insertLast(ListNode*,string);
+        string first(ListNode*);
+        string second(ListNode*);
         string getValue();
         ListNode* getNext();
 };
 
-string first(ListNode* head)
+string ListNode::first(ListNode* head)
 {
-    return head==NULL?NULL:head->getValue();
+    return head==nullptr?nullptr:head->getValue();
 }
 
-string second(ListNode* head)
+string ListNode::second(ListNode* head)
 {
-    return head==NULL||head->getNext()==NULL?NULL:head->getNext()->getValue();
+    return head==nullptr||head->getNext()==nullptr?NULL:head->getNext()->getValue();
 }
 
-ListNode* copyOfLast(ListNode* head)
+ListNode* ListNode::copyOfLast(ListNode* head)
 {
-    ListNode* temp=pointerToLast(head);
-    return new ListNode(temp->getValue(),temp->getNext());
+    return copyNode(pointerToLast(head));
 }
 
-ListNode* pointerToLast(ListNode* head)
+ListNode* ListNode::pointerToLast(ListNode* head)
 {
     ListNode* curr=head;
-    while(curr!=NULL)
+    while(curr->getNext()!=nullptr)
         curr=curr->getNext();
     return curr;
 }
 
-ListNode* insertFirst(ListNode* head, string arg)
+ListNode* ListNode::insertFirst(ListNode* head,string arg)
 {
     return new ListNode(arg,head);
 }
 
-ListNode* insertLast(ListNode* head, string arg)
+ListNode* ListNode::insertLast(ListNode* head,string arg)
 {
-    return new ListNode(arg,pointerToLast(head));
+    return new ListNode(arg,nullptr);
 }
 
-ListNode::ListNode(string value,ListNode* next) : value(value), next(next)
+ListNode::ListNode(string value,ListNode* next):value(value),next(next)
 {
 }
 
-ListNode* ListNode::copyNode(ListNode* arg) noexcept
+ListNode* ListNode::copyNode(ListNode* arg)
 {
     return new ListNode(arg->getValue(),arg->getNext());
 }
 
-ListNode* ListNode::copyList(ListNode* arg) noexcept
+ListNode* ListNode::copyList(ListNode* arg)
 {
-    
+    return arg->getNext()==nullptr?copyNode(arg):new ListNode(arg->getValue(),copyList(arg->getNext()));
 }
 
-ListNode* ListNode::rest(ListNode* h) noexcept
+ListNode* ListNode::rest(ListNode* h)
 {
-    
+    return copyList(h->getNext());
 }
 
-ListNode* ListNode::getNext() 
+ListNode* ListNode::getNext()
 {
     return next;
 }
@@ -80,3 +105,5 @@ string ListNode::getValue()
 {
     return value;
 }
+
+#endif
