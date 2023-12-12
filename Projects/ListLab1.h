@@ -19,16 +19,15 @@ using namespace std;
  */
 class ListNode
 {
-    private:
+    public:
         /**
          * @brief Value currently held
-        */
+         */
         string value;
         /**
          * @brief The next ListNode
          */
         ListNode* next;
-    public:
         ListNode(string,ListNode*);
         ListNode* copyNode(ListNode*);
         ListNode* copyList(ListNode*);
@@ -105,7 +104,8 @@ ListNode* ListNode::insertFirst(ListNode* head,string arg)
  */
 ListNode* ListNode::insertLast(ListNode* head,string arg)
 {
-    return new ListNode(arg,nullptr);
+    head->pointerToLast(head)->next=new ListNode(arg,nullptr);
+    return head;
 }
 
 /**
@@ -162,5 +162,6 @@ string ListNode::getValue()
 {
     return value;
 }
+
 
 #endif
