@@ -7,9 +7,7 @@
 using namespace std;
 
 // we do some funny
-typedef uint64_t U64;
 typedef int32_t I32;
-typedef int16_t I16;
 typedef int8_t I8;
 #define CHAR char
 typedef string STR;
