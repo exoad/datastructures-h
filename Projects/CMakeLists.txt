@@ -1,4 +1,4 @@
-file(GLOB DSHPROJECT_SRC "*.hh" "*.cc")
+file(GLOB DSHPROJECT_SRC "*.hh" "*.cpp" "*.cxx" "*.h" "*.cc")
 
 add_executable(dshprojects ${DSHPROJECT_SRC}
         TimeTracker.cpp)
