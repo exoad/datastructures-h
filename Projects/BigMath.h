@@ -131,27 +131,24 @@ BigMath BigMath::operator-(BigMath const& n)
 
 BigMath makeBigMath(STR number)
 {
-    BigMath* head = nullptr;
-    BigMath* current = nullptr;
-    transform(
-      number.end(),
-      number.begin(),
-      back_inserter(number),
-      [&head,&current](CHAR c)
+      BigMath* head=nullptr;
+      BigMath* current=nullptr;
+      I32 i=0;
+      while(number[i]!='\0')
       {
-          if (head==nullptr)
-          {
-            head=new BigMath(c-'0',nullptr);
-            current=head;
-          }
-          else
-          {
-            current->setNext(new BigMath(c-'0',nullptr));
-            current=current->getNext();
-          }
+            if(head==nullptr)
+            {
+                  head=new BigMath(number[i]-'0',nullptr);
+                  current=head;
+            }
+            else
+            {
+                  current->setNext(new BigMath(number[i]-'0',nullptr));
+                  current=current->getNext();
+            }
+            i++;
       }
-    );
-    return *head;
+      return *head;
 }
 
 STR collateBigMath(BigMath const& number)
