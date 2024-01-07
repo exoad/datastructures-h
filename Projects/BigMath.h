@@ -1,3 +1,9 @@
+/// \file BigMath.h
+/// \author Jack Meng
+/// \brief A program to implement big numbers using a linked list.
+/// \date 2024-01-07
+
+
 #pragma once
 
 #include <cstdint>
@@ -6,10 +12,9 @@
 
 using namespace std;
 
-// we do some funny
 typedef int32_t I32;
 typedef int8_t I8;
-#define CHAR char
+typedef char CHAR;
 typedef string STR;
 
 class BigMath
@@ -19,10 +24,10 @@ class BigMath
             BigMath *next;
       public:
             BigMath(I8,BigMath*);
-            I8 GetDigit();
-            BigMath* GetNext();
-            void SetDigit(I8);
-            void SetNext(BigMath*);
+            I8 getDigit();
+            BigMath* getNext();
+            void setDigit(I8);
+            void setNext(BigMath*);
             BigMath operator+(BigMath const&);
             BigMath operator-(BigMath const&);
 };
@@ -33,22 +38,22 @@ BigMath::BigMath(I8 digit,BigMath *next)
       this->next=next;
 }
 
-I8 BigMath::GetDigit()
+I8 BigMath::getDigit()
 {
       return digit;
 }
 
-BigMath* BigMath::GetNext()
+BigMath* BigMath::getNext()
 {
       return next;
 }
 
-void BigMath::SetDigit(I8 digit)
+void BigMath::setDigit(I8 digit)
 {
       this->digit=digit;
 }
 
-void BigMath::SetNext(BigMath *next)
+void BigMath::setNext(BigMath *next)
 {
       this->next=next;
 }
@@ -65,13 +70,13 @@ BigMath BigMath::operator+(BigMath const& n)
             I8 sum=c;
             if(a!=nullptr)
             {
-                  sum+=a->GetDigit();
-                  a=a->GetNext();
+                  sum+=a->getDigit();
+                  a=a->getNext();
             }
             if(b!=nullptr)
             {
-                  sum+=b->GetDigit();
-                  b=b->GetNext();
+                  sum+=b->getDigit();
+                  b=b->getNext();
             }
             c=sum/10;
             if(result==nullptr)
@@ -81,12 +86,12 @@ BigMath BigMath::operator+(BigMath const& n)
             }
             else
             {
-                  current->SetNext(new BigMath(sum%10,nullptr));
-                  current=current->GetNext();
+                  current->setNext(new BigMath(sum%10,nullptr));
+                  current=current->getNext();
             }
       }
       if(c>0)
-            current->SetNext(new BigMath(c,nullptr));
+            current->setNext(new BigMath(c,nullptr));
       return *result;
 }
 
@@ -102,13 +107,13 @@ BigMath BigMath::operator-(BigMath const& n)
             I8 diff=c;
             if(a!=nullptr)
             {
-                  diff+=a->GetDigit();
-                  a=a->GetNext();
+                  diff+=a->getDigit();
+                  a=a->getNext();
             }
             if(b!=nullptr)
             {
-                  diff-=b->GetDigit();
-                  b=b->GetNext();
+                  diff-=b->getDigit();
+                  b=b->getNext();
             }
             c=diff/10;
             if(result==nullptr)
@@ -118,16 +123,16 @@ BigMath BigMath::operator-(BigMath const& n)
             }
             else
             {
-                  current->SetNext(new BigMath(diff%10,nullptr));
-                  current=current->GetNext();
+                  current->setNext(new BigMath(diff%10,nullptr));
+                  current=current->getNext();
             }
       }
       if(c>0)
-            current->SetNext(new BigMath(c,nullptr));
+            current->setNext(new BigMath(c,nullptr));
       return *result;
 }
 
-BigMath JMParse(STR number)
+BigMath makeBigMath(STR number)
 {
       BigMath* head=nullptr;
       BigMath* current=nullptr;
@@ -141,22 +146,22 @@ BigMath JMParse(STR number)
             }
             else
             {
-                  current->SetNext(new BigMath(number[i]-'0',nullptr));
-                  current=current->GetNext();
+                  current->setNext(new BigMath(number[i]-'0',nullptr));
+                  current=current->getNext();
             }
             i++;
       }
       return *head;
 }
 
-STR JMCollate(BigMath const& number)
+STR collateBigMath(BigMath const& number)
 {
       STR result="";
       BigMath* current=(BigMath*)&number;
       while(current!=nullptr)
       {
-            result=(CHAR)(current->GetDigit()+'0')+result;
-            current=current->GetNext();
+            result=(CHAR)(current->getDigit()+'0')+result;
+            current=current->getNext();
       }
       return result;
 }
