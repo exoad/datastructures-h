@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <cstring>
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -25,7 +26,7 @@ class BigMath
       public:
             BigMath(I8,BigMath*);
             I8 getDigit();
-            BigMath* getNext();
+            BigMath* getNext() const;
             void setDigit(I8);
             void setNext(BigMath*);
             BigMath operator+(BigMath const&);
@@ -43,7 +44,7 @@ I8 BigMath::getDigit()
       return digit;
 }
 
-BigMath* BigMath::getNext()
+BigMath* BigMath::getNext() const
 {
       return next;
 }
@@ -60,98 +61,97 @@ void BigMath::setNext(BigMath *next)
 
 BigMath BigMath::operator+(BigMath const& n)
 {
-      BigMath* result=nullptr;
-      BigMath* current=nullptr;
-      BigMath* a=this;
-      BigMath* b=(BigMath*)&n;
-      I8 c=0;
-      while(a!=nullptr||b!=nullptr)
-      {
-            I8 sum=c;
-            if(a!=nullptr)
-            {
-                  sum+=a->getDigit();
-                  a=a->getNext();
-            }
-            if(b!=nullptr)
-            {
-                  sum+=b->getDigit();
-                  b=b->getNext();
-            }
-            c=sum/10;
-            if(result==nullptr)
-            {
-                  result=new BigMath(sum%10,nullptr);
-                  current=result;
-            }
-            else
-            {
-                  current->setNext(new BigMath(sum%10,nullptr));
-                  current=current->getNext();
-            }
-      }
-      if(c>0)
-            current->setNext(new BigMath(c,nullptr));
-      return *result;
+    BigMath* result=nullptr;
+    BigMath* current=nullptr;
+    BigMath* a=this;
+    BigMath* b =(BigMath*)&n;
+    I8 carry=0;
+    while (a!=nullptr||b!=nullptr||carry!=0)
+    {
+        I8 sum=carry;
+        if (a!=nullptr)
+        {
+            sum+=a->getDigit();
+            a=a->getNext();
+        }
+        if (b!=nullptr)
+        {
+            sum+=b->getDigit();
+            b=b->getNext();
+        }
+        carry=sum/10;
+        if (result==nullptr)
+        {
+            result=new BigMath(sum%10,nullptr);
+            current=result;
+        }
+        else
+        {
+            current->setNext(new BigMath(sum%10,nullptr));
+            current=current->getNext();
+        }
+    }
+    return *result;
 }
 
 BigMath BigMath::operator-(BigMath const& n)
 {
-      BigMath* result=nullptr;
-      BigMath* current=nullptr;
-      BigMath* a=this;
-      BigMath* b=(BigMath*)&n;
-      I8 c=0;
-      while(a!=nullptr||b!=nullptr)
-      {
-            I8 diff=c;
-            if(a!=nullptr)
-            {
-                  diff+=a->getDigit();
-                  a=a->getNext();
-            }
-            if(b!=nullptr)
-            {
-                  diff-=b->getDigit();
-                  b=b->getNext();
-            }
-            c=diff/10;
-            if(result==nullptr)
-            {
-                  result=new BigMath(diff%10,nullptr);
-                  current=result;
-            }
-            else
-            {
-                  current->setNext(new BigMath(diff%10,nullptr));
-                  current=current->getNext();
-            }
-      }
-      if(c>0)
-            current->setNext(new BigMath(c,nullptr));
-      return *result;
+    BigMath* result=nullptr;
+    BigMath* current=nullptr;
+    BigMath* a=this;
+    BigMath* b=(BigMath*)&n;
+    I8 borrow=0;
+    while (a!=nullptr||b!=nullptr||borrow!=0)
+    {
+        I8 diff=borrow;
+        if (a!=nullptr)
+        {
+            diff+=a->getDigit();
+            a=a->getNext();
+        }
+        if (b!=nullptr)
+        {
+            diff-=b->getDigit();
+            b=b->getNext();
+        }
+        borrow=diff<0?-1:0;
+        if (result==nullptr)
+        {
+            result=new BigMath((diff+10)%10,nullptr);
+            current=result;
+        }
+        else
+        {
+            current->setNext(new BigMath((diff+10)%10,nullptr));
+            current=current->getNext();
+        }
+    }
+    return *result;
 }
 
 BigMath makeBigMath(STR number)
 {
-      BigMath* head=nullptr;
-      BigMath* current=nullptr;
-      I32 i=0;
-      while(number[i]!='\0')
+    BigMath* head = nullptr;
+    BigMath* current = nullptr;
+    transform(
+      number.end(),
+      number.begin(),
+      back_inserter(number),
+      [&head,&current](CHAR c)
       {
-            if(head==nullptr)
-            {
-                  head=new BigMath(number[i]-'0',nullptr);
-                  current=head;
-            }
-            else
-            {
-                  current->setNext(new BigMath(number[i]-'0',nullptr));
-                  current=current->getNext();
-            }
-            i++;
+          if (head==nullptr)
+          {
+            head=new BigMath(c-'0',nullptr);
+            current=head;
+          }
+          else
+          {
+            current->setNext(new BigMath(c-'0',nullptr));
+            current=current->getNext();
+          }
       }
-      return *head;
+    );
+    return *head;
 }
 
 STR collateBigMath(BigMath const& number)
