@@ -61,8 +61,8 @@ void BigMath::setNext(BigMath *next)
 
 BigMath BigMath::operator+(BigMath const& n)
 {
-    BigMath* result=nullptr;
-    BigMath* current=nullptr;
+    BigMath* res=nullptr;
+    BigMath* curr=nullptr;
     BigMath* a=this;
     BigMath* b =(BigMath*)&n;
     I8 carry=0;
@@ -80,24 +80,24 @@ BigMath BigMath::operator+(BigMath const& n)
             b=b->getNext();
         }
         carry=sum/10;
-        if (result==nullptr)
+        if (res==nullptr)
         {
-            result=new BigMath(sum%10,nullptr);
-            current=result;
+            res=new BigMath(sum%10,nullptr);
+            curr=res;
         }
         else
         {
-            current->setNext(new BigMath(sum%10,nullptr));
-            current=current->getNext();
+            curr->setNext(new BigMath(sum%10,nullptr));
+            curr=curr->getNext();
         }
     }
-    return *result;
+    return *res;
 }
 
 BigMath BigMath::operator-(BigMath const& n)
 {
-    BigMath* result=nullptr;
-    BigMath* current=nullptr;
+    BigMath* res=nullptr;
+    BigMath* curr=nullptr;
     BigMath* a=this;
     BigMath* b=(BigMath*)&n;
     I8 borrow=0;
@@ -115,36 +115,36 @@ BigMath BigMath::operator-(BigMath const& n)
             b=b->getNext();
         }
         borrow=diff<0?-1:0;
-        if (result==nullptr)
+        if (res==nullptr)
         {
-            result=new BigMath((diff+10)%10,nullptr);
-            current=result;
+            res=new BigMath((diff+10)%10,nullptr);
+            curr=res;
         }
         else
         {
-            current->setNext(new BigMath((diff+10)%10,nullptr));
-            current=current->getNext();
+            curr->setNext(new BigMath((diff+10)%10,nullptr));
+            curr=curr->getNext();
         }
     }
-    return *result;
+    return *res;
 }
 
 BigMath makeBigMath(STR number)
 {
       BigMath* head=nullptr;
-      BigMath* current=nullptr;
+      BigMath* curr=nullptr;
       I32 i=0;
       while(number[i]!='\0')
       {
             if(head==nullptr)
             {
                   head=new BigMath(number[i]-'0',nullptr);
-                  current=head;
+                  curr=head;
             }
             else
             {
-                  current->setNext(new BigMath(number[i]-'0',nullptr));
-                  current=current->getNext();
+                  curr->setNext(new BigMath(number[i]-'0',nullptr));
+                  curr=curr->getNext();
             }
             i++;
       }
@@ -153,12 +153,12 @@ BigMath makeBigMath(STR number)
 
 STR collateBigMath(BigMath const& number)
 {
-      STR result="";
-      BigMath* current=(BigMath*)&number;
-      while(current!=nullptr)
+      STR res="";
+      BigMath* curr=(BigMath*)&number;
+      while(curr!=nullptr)
       {
-            result=(CHAR)(current->getDigit()+'0')+result;
-            current=current->getNext();
+            res=(CHAR)(curr->getDigit()+'0')+res;
+            curr=curr->getNext();
       }
-      return result;
+      return res;
 }
