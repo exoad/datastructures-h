@@ -12,34 +12,29 @@
 #include <algorithm>
 
 using namespace std;
-
-typedef int32_t I32;
-typedef int8_t I8;
-typedef char CHAR;
-typedef string STR;
+using I32=int32_t;
+using CHAR=char;
+using STR=string;
 
 class BigMath
 {
       private:
-            I8 digit;
+            I32 digit;
             BigMath *next;
       public:
-            BigMath(I8,BigMath*);
-            I8 getDigit();
+            BigMath(I32,BigMath*);
+            I32 getDigit();
             BigMath* getNext() const;
-            void setDigit(I8);
+            void setDigit(I32);
             void setNext(BigMath*);
             BigMath operator+(BigMath const&);
             BigMath operator-(BigMath const&);
 };
 
-BigMath::BigMath(I8 digit,BigMath *next)
-{
-      this->digit=digit;
-      this->next=next;
-}
+BigMath::BigMath(I32 digit,BigMath *next):digit(digit),next(next)
+{}
 
-I8 BigMath::getDigit()
+I32 BigMath::getDigit()
 {
       return digit;
 }
@@ -49,14 +44,14 @@ BigMath* BigMath::getNext() const
       return next;
 }
 
-void BigMath::setDigit(I8 digit)
+void BigMath::setDigit(I32 d)
 {
-      this->digit=digit;
+      this->digit=d;
 }
 
-void BigMath::setNext(BigMath *next)
+void BigMath::setNext(BigMath *n)
 {
-      this->next=next;
+      this->next=n;
 }
 
 BigMath BigMath::operator+(BigMath const& n)
@@ -65,19 +60,19 @@ BigMath BigMath::operator+(BigMath const& n)
       BigMath* current=nullptr;
       BigMath* a=this;
       BigMath* b=(BigMath*)&n;
-      I8 c=0;
+      I32 c=0;
       while(a!=nullptr||b!=nullptr)
       {
-            I8 sum=c;
+            I32 sum=c;
             if(a!=nullptr)
             {
-                  sum+=a->GetDigit();
-                  a=a->GetNext();
+                  sum+=a->getDigit();
+                  a=a->getNext();
             }
             if(b!=nullptr)
             {
-                  sum+=b->GetDigit();
-                  b=b->GetNext();
+                  sum+=b->getDigit();
+                  b=b->getNext();
             }
             c=sum/10;
             if(result==nullptr)
@@ -87,12 +82,12 @@ BigMath BigMath::operator+(BigMath const& n)
             }
             else
             {
-                  current->SetNext(new BigMath(sum%10,nullptr));
-                  current=current->GetNext();
+                  current->setNext(new BigMath(sum%10,nullptr));
+                  current=current->getNext();
             }
       }
       if(c>0)
-            current->SetNext(new BigMath(c,nullptr));
+            current->setNext(new BigMath(c,nullptr));
       return *result;
 }
 
@@ -102,10 +97,10 @@ BigMath BigMath::operator-(BigMath const& n)
     BigMath* curr=nullptr;
     BigMath* a=this;
     BigMath* b=(BigMath*)&n;
-    I8 borrow=0;
+    I32 borrow=0;
     while (a!=nullptr||b!=nullptr||borrow!=0)
     {
-        I8 diff=borrow;
+        I32 diff=borrow;
         if (a!=nullptr)
         {
             diff+=a->getDigit();
