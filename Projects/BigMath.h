@@ -59,10 +59,10 @@ BigMath BigMath::operator+(BigMath const& n)
       BigMath* current=nullptr;
       BigMath* a=this;
       BigMath* b=(BigMath*)&n;
-      I8 c=0;
+      I32 c=0;
       while(a!=nullptr||b!=nullptr)
       {
-            I8 sum=c;
+            I32 sum=c;
             if(a!=nullptr)
             {
                   sum+=a->GetDigit();
