@@ -12,12 +12,18 @@
 #include <algorithm>
 
 using namespace std;
+<<<<<<< HEAD
 
 // yes
 typedef int64_t I64;
 typedef int I32;
 typedef char CHAR;
 typedef string STR;
+=======
+using I32=int32_t;
+using CHAR=char;
+using STR=string;
+>>>>>>> faec63ecc8b672e86b7add5f05bfe60fb26c5222
 
 // Personal marker
 #define PRINT(MSG) cout<<MSG;
@@ -31,6 +37,7 @@ typedef string STR;
 class BigMath
 {
       private:
+<<<<<<< HEAD
             /**
              * @brief The current digit held
              */
@@ -38,12 +45,16 @@ class BigMath
             /**
              * @brief Ptr to next digit or BigMath object (b/c of linked list)
              */
+=======
+            I32 digit;
+>>>>>>> faec63ecc8b672e86b7add5f05bfe60fb26c5222
             BigMath *next;
             /**
              * @brief Whether the number is negative or not
              */
             bool negative=false;
       public:
+<<<<<<< HEAD
             /**
              * @brief Construct a new Big Math object
              */
@@ -75,6 +86,12 @@ class BigMath
             /**
              * @brief Set the Next object
              */
+=======
+            BigMath(I32,BigMath*);
+            I32 getDigit();
+            BigMath* getNext() const;
+            void setDigit(I32);
+>>>>>>> faec63ecc8b672e86b7add5f05bfe60fb26c5222
             void setNext(BigMath*);
             /**
              * @brief Perform addition on two BigMath objects
@@ -103,6 +120,7 @@ class BigMath
             BigMath* ptrSecLast(BigMath*);
 };
 
+<<<<<<< HEAD
 BigMath::BigMath(I64 digit,BigMath *next)
 {
       this->digit=digit;
@@ -143,6 +161,12 @@ bool BigMath::isNegative()
 }
 
 I64 BigMath::getDigit()
+=======
+BigMath::BigMath(I32 digit,BigMath *next):digit(digit),next(next)
+{}
+
+I32 BigMath::getDigit()
+>>>>>>> faec63ecc8b672e86b7add5f05bfe60fb26c5222
 {
       return digit;
 }
@@ -152,18 +176,23 @@ BigMath* BigMath::getNext() const
       return next;
 }
 
+<<<<<<< HEAD
 void BigMath::setDigit(I64 digit)
+=======
+void BigMath::setDigit(I32 d)
+>>>>>>> faec63ecc8b672e86b7add5f05bfe60fb26c5222
 {
-      this->digit=digit;
+      this->digit=d;
 }
 
-void BigMath::setNext(BigMath *next)
+void BigMath::setNext(BigMath *n)
 {
-      this->next=next;
+      this->next=n;
 }
 
 BigMath BigMath::operator+(BigMath const& n)
 {
+<<<<<<< HEAD
     BigMath* res=nullptr;
     BigMath* curr=nullptr;
     BigMath* a=this;
@@ -199,6 +228,41 @@ BigMath BigMath::operator+(BigMath const& n)
         }
     }
     return *res;
+=======
+      BigMath* result=nullptr;
+      BigMath* current=nullptr;
+      BigMath* a=this;
+      BigMath* b=(BigMath*)&n;
+      I32 c=0;
+      while(a!=nullptr||b!=nullptr)
+      {
+            I32 sum=c;
+            if(a!=nullptr)
+            {
+                  sum+=a->getDigit();
+                  a=a->getNext();
+            }
+            if(b!=nullptr)
+            {
+                  sum+=b->getDigit();
+                  b=b->getNext();
+            }
+            c=sum/10;
+            if(result==nullptr)
+            {
+                  result=new BigMath(sum%10,nullptr);
+                  current=result;
+            }
+            else
+            {
+                  current->setNext(new BigMath(sum%10,nullptr));
+                  current=current->getNext();
+            }
+      }
+      if(c>0)
+            current->setNext(new BigMath(c,nullptr));
+      return *result;
+>>>>>>> faec63ecc8b672e86b7add5f05bfe60fb26c5222
 }
 
 /**
@@ -216,6 +280,7 @@ static inline void trim(BigMath* arg)
 
 BigMath BigMath::operator-(BigMath const& n)
 {
+<<<<<<< HEAD
     BigMath* res=new BigMath(0,nullptr);
     BigMath* curr=res;
     BigMath* a=copyList(this);
@@ -225,6 +290,19 @@ BigMath BigMath::operator-(BigMath const& n)
     {
         curr->setDigit(a->getDigit()-b->getDigit());
         if(a!=nullptr)
+=======
+    BigMath* res=nullptr;
+    BigMath* curr=nullptr;
+    BigMath* a=this;
+    BigMath* b=(BigMath*)&n;
+    I32 borrow=0;
+    while (a!=nullptr||b!=nullptr||borrow!=0)
+    {
+        I32 diff=borrow;
+        if (a!=nullptr)
+        {
+            diff+=a->getDigit();
+>>>>>>> faec63ecc8b672e86b7add5f05bfe60fb26c5222
             a=a->getNext();
         if(b!=nullptr)
             b=b->getNext();
