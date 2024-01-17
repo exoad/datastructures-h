@@ -3,8 +3,8 @@
 /// \brief A program to implement big numbers using a linked list.
 /// \date 2024-01-07
 
-
-#pragma once
+#ifndef BIGMATH_H
+#define BIGMATH_H
 
 #include <cstdint>
 #include <cstring>
@@ -13,33 +13,136 @@
 
 using namespace std;
 
-typedef int32_t I32;
-typedef int8_t I8;
+// yes
+typedef int64_t I64;
+typedef int I32;
 typedef char CHAR;
 typedef string STR;
 
+// Personal marker
+#define PRINT(MSG) cout<<MSG;
+#define GET(MSG,X) cout<<MSG; \
+                   cin>>X;
+// This macro is for infinite loops
+#define LOOP for(;;)
+/**
+ * @brief BigMath class which represents a big number using a linked list.
+ */
 class BigMath
 {
       private:
-            I8 digit;
+            /**
+             * @brief The current digit held
+             */
+            I64 digit;
+            /**
+             * @brief Ptr to next digit or BigMath object (b/c of linked list)
+             */
             BigMath *next;
+            /**
+             * @brief Whether the number is negative or not
+             */
+            bool negative=false;
       public:
-            BigMath(I8,BigMath*);
-            I8 getDigit();
+            /**
+             * @brief Construct a new Big Math object
+             */
+            BigMath(I64,BigMath*);
+            /**
+             * @brief Set the Negative object
+             */
+            void setNegative(bool);
+            /**
+             * @brief Check if the number is negative
+             * @return true if negative
+             * @return false if positive
+             */
+            bool isNegative();
+            /**
+             * @brief Get the Digit object
+             * @return I64
+             */
+            I64 getDigit();
+            /**
+             * @brief Get the Next object
+             * @return BigMath*
+             */
             BigMath* getNext() const;
-            void setDigit(I8);
+            /**
+             * @brief Set the Digit object
+             */
+            void setDigit(I64);
+            /**
+             * @brief Set the Next object
+             */
             void setNext(BigMath*);
+            /**
+             * @brief Perform addition on two BigMath objects
+             * @return BigMath
+             */
             BigMath operator+(BigMath const&);
+            /**
+             * @brief Perform subtraction on two BigMath objects
+             * @return BigMath
+             */
             BigMath operator-(BigMath const&);
+            /**
+             * @brief Copy a BigMath object
+             * @return BigMath* pointer to the new BigMath object
+             */
+            BigMath* copyList(BigMath*);
+            /**
+             * @brief Gets the last element of a BigMath object
+             * @return BigMath* pointer to the last element
+             */
+            BigMath* ptrLast(BigMath*);
+            /**
+             * @brief Gets the second last element of a BigMath object
+             * @return BigMath* pointer to the second last element
+             */
+            BigMath* ptrSecLast(BigMath*);
 };
 
-BigMath::BigMath(I8 digit,BigMath *next)
+BigMath::BigMath(I64 digit,BigMath *next)
 {
       this->digit=digit;
       this->next=next;
 }
 
-I8 BigMath::getDigit()
+BigMath* BigMath::ptrSecLast(BigMath* arg)
+{
+      BigMath* curr=arg;
+      while(curr->getNext()!=arg->ptrLast(arg))
+            curr=curr->getNext();
+      return curr;
+}
+
+BigMath* BigMath::ptrLast(BigMath* arg)
+{
+      BigMath* curr=arg;
+      // traverse to the last element
+      while(curr->getNext()!=nullptr)
+            curr=curr->getNext();
+      return curr;
+}
+
+BigMath* BigMath::copyList(BigMath* arg)
+{
+      // copy the list
+      return arg->getNext()==nullptr?new BigMath(arg->getDigit(),nullptr):new BigMath(arg->getDigit(),copyList(arg->getNext()));
+}
+
+void BigMath::setNegative(bool negative)
+{
+      this->negative=negative;
+}
+
+bool BigMath::isNegative()
+{
+      return negative;
+}
+
+I64 BigMath::getDigit()
 {
       return digit;
 }
@@ -49,7 +152,7 @@ BigMath* BigMath::getNext() const
       return next;
 }
 
-void BigMath::setDigit(I8 digit)
+void BigMath::setDigit(I64 digit)
 {
       this->digit=digit;
 }
@@ -65,10 +168,11 @@ BigMath BigMath::operator+(BigMath const& n)
     BigMath* curr=nullptr;
     BigMath* a=this;
     BigMath* b =(BigMath*)&n;
-    I8 carry=0;
+    I64 carry=0;
+    // add corresponding digits
     while (a!=nullptr||b!=nullptr||carry!=0)
     {
-        I8 sum=carry;
+        I64 sum=carry;
         if (a!=nullptr)
         {
             sum+=a->getDigit();
@@ -79,14 +183,17 @@ BigMath BigMath::operator+(BigMath const& n)
             sum+=b->getDigit();
             b=b->getNext();
         }
+        // carry over the digit if necessary
         carry=sum/10;
         if (res==nullptr)
         {
+            // create the first node
             res=new BigMath(sum%10,nullptr);
             curr=res;
         }
         else
         {
+            // add a new node
             curr->setNext(new BigMath(sum%10,nullptr));
             curr=curr->getNext();
         }
@@ -94,71 +201,96 @@ BigMath BigMath::operator+(BigMath const& n)
     return *res;
 }
 
+/**
+ * @brief Trim the BigMath object by removing leading zeroes
+ * @param arg  BigMath object to trim
+ */
+static inline void trim(BigMath* arg)
+{
+      while(arg->ptrLast(arg)!=arg&&arg->ptrLast(arg)->getDigit()==0)
+      {
+            delete arg->ptrLast(arg);
+            arg->ptrSecLast(arg)->setNext(nullptr);
+      }
+}
+
 BigMath BigMath::operator-(BigMath const& n)
 {
-    BigMath* res=nullptr;
-    BigMath* curr=nullptr;
-    BigMath* a=this;
-    BigMath* b=(BigMath*)&n;
-    I8 borrow=0;
-    while (a!=nullptr||b!=nullptr||borrow!=0)
+    BigMath* res=new BigMath(0,nullptr);
+    BigMath* curr=res;
+    BigMath* a=copyList(this);
+    BigMath* b=copyList((BigMath*)&n);
+    // subtract corresponding digits
+    while (a!=nullptr||b!=nullptr)
     {
-        I8 diff=borrow;
-        if (a!=nullptr)
-        {
-            diff+=a->getDigit();
+        curr->setDigit(a->getDigit()-b->getDigit());
+        if(a!=nullptr)
             a=a->getNext();
-        }
-        if (b!=nullptr)
-        {
-            diff-=b->getDigit();
+        if(b!=nullptr)
             b=b->getNext();
-        }
-        borrow=diff<0?-1:0;
-        if (res==nullptr)
+        curr->setNext(new BigMath(0, nullptr));
+        curr = curr->getNext();
+    }
+    trim(res);
+    curr=res;
+    // carry over the negative sign if necessary
+    while (curr!=nullptr)
+    {
+        // if the current digit is negative, carry over the negative sign
+        if(curr->getDigit()<0&&curr->getNext()!=nullptr)
         {
-            res=new BigMath((diff+10)%10,nullptr);
-            curr=res;
+            curr->setNegative(true);
+            curr->setDigit(curr->getDigit()+10);
+            curr=curr->getNext();
+            curr->setDigit(curr->getDigit()-1);
         }
         else
         {
-            curr->setNext(new BigMath((diff+10)%10,nullptr));
+            // if the current digit is negative and there is no next digit, carry over the negative sign
             curr=curr->getNext();
         }
     }
+    // remove leading zeroes
+    trim(res);
     return *res;
 }
 
+/**
+ * @brief Create a BigMath object from a string
+ * @param number string to convert
+ * @return BigMath BigMath object
+ */
 BigMath makeBigMath(STR number)
 {
-      BigMath* head=nullptr;
-      BigMath* curr=nullptr;
-      I32 i=0;
-      while(number[i]!='\0')
-      {
-            if(head==nullptr)
-            {
-                  head=new BigMath(number[i]-'0',nullptr);
-                  curr=head;
-            }
-            else
-            {
-                  curr->setNext(new BigMath(number[i]-'0',nullptr));
-                  curr=curr->getNext();
-            }
-            i++;
-      }
-      return *head;
+    BigMath* head = new BigMath(number[number.length()-1]-'0',nullptr);
+    BigMath *curr=head;
+    // stores the number in reverse order in the linked list
+    for (I64 i=number.length()-2;i>=0;i--)
+    {
+        curr->setNext(new BigMath(number[i]-'0',nullptr));
+        curr=curr->getNext();
+    }
+    return *head;
 }
 
+/**
+ * @brief Collate a BigMath object into a string
+ * @param number BigMath object to collate
+ * @return STR string representation of BigMath object
+ */
 STR collateBigMath(BigMath const& number)
 {
       STR res="";
       BigMath* curr=(BigMath*)&number;
+      bool isNegative=curr->isNegative();
       while(curr!=nullptr)
       {
-            res=(CHAR)(curr->getDigit()+'0')+res;
+            // aggregate the number in reverse order
+            res=to_string(abs(curr->getDigit()))+res;
             curr=curr->getNext();
       }
-      return res;
+      return isNegative?"-"+res:res;
 }
+
+
+#endif
