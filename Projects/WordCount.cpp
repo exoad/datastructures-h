@@ -56,7 +56,7 @@ I32 main(void)
         while(fin>>word) // start looking thru the file
         {
             LNode* curr=llist_head; LNode* prev=nullptr;
-            while(curr!=nullptr&&curr->word.size()==word.size()&&std::equal(word.begin(),word.end(),curr->word.begin(),[](char x,char y){return std::tolower(static_cast<char>(x))==std::tolower(static_cast<char>(y));})) // here we check if the read word has been looked at using a tolower ignore case implementation is kind of scuffed
+            while(curr!=nullptr&&(curr->word.size()!=word.size()||!std::equal(word.begin(),word.end(),curr->word.begin(),curr->word.end(),[](const char& x,const char& y){return std::tolower(x)==std::tolower(y);}))) // here we check if the read word has been looked at using a tolower ignore case implementation is kind of scuffed
             {
                 prev=curr;
                 curr=curr->next;
