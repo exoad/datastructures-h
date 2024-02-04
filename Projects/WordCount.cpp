@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cstring>
 #include <fstream>
+#include <vector>
 #include <algorithm>
 #include <cctype>
 using STR=std::string;
@@ -43,6 +44,54 @@ class LNode
         ~LNode()
         {if(next!=nullptr)delete next;}
 };
+
+/**
+ * @brief Sorts the linkedlist in alphabetical order
+ *
+ * @param head the head of the linkedlist
+ */
+void sortLL(LNode*& head) {
+    // im too lazy to write a proper sort myself so we are just going to use sort()
+    std::vector<LNode*>nodeVector;
+    LNode* current=head;
+    // copy the linkedlist to a vector
+    while(current!=nullptr)
+    {
+        nodeVector.push_back(new LNode(current->freq,current->word,nullptr));
+        current=current->next;
+    }
+    // sort the vector using a comparator
+    std::sort(
+        nodeVector.begin(),
+        nodeVector.end(),
+        [](const LNode* a,const LNode* b)
+        {
+            STR a_lower=a->word;
+            STR b_lower=b->word;
+            // ignore case here for the comparison
+            std::transform(a_lower.begin(),a_lower.end(),a_lower.begin(),::tolower);
+            std::transform(b_lower.begin(),b_lower.end(),b_lower.begin(),::tolower);
+            return a_lower<b_lower;
+        }
+    );
+    // reassemble the linkedlist lol
+    head=nullptr;
+    LNode* tail=nullptr;
+    for(LNode* node:nodeVector)
+    {
+        if (head==nullptr)
+        {
+            head=node;
+            tail=node;
+        }
+        else
+        {
+            tail->next=node;
+            tail=node;
+        }
+    }
+}
+
 I32 main(void)
 {
       STR fileName; // read file to search for and ask user for the file
@@ -74,6 +123,8 @@ I32 main(void)
         if(fout.is_open())
         {
             LNode* curr=llist_head;
+            // sort the linkedlist
+            sortLL(curr);
             while(curr!=nullptr) //generic loop thru linkedlist and print the prettified results to the file
             {
                 fout<<curr->word<<"="<<curr->freq<<"\n";
