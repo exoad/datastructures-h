@@ -90,15 +90,23 @@ ListNode* ListNode::add(ListNode* n)
 }
 
 ListNode* ListNode::remove()
-{
-    if(prev!=nullptr)
-        prev->next=next;
-    if(next!=nullptr)
-        next->prev=prev;
-    return prev;
+=======
 }
+
 
 ListNode* ListNode::remove(int position)
 {
     return position==0?remove():next->remove(position-1);
 }
+=======
+    delete this;
+}
+
+void ListNode::remove(int position)
+{
+    if(position==0)
+        remove();
+    else
+        next->remove(position-1);
+}
+>>>>>>> 04200898796383d8ac671f894bedb555dba19ce3
