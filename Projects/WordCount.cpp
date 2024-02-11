@@ -127,7 +127,7 @@ I32 main(void)
             sortLL(curr);
             while(curr!=nullptr) //generic loop thru linkedlist and print the prettified results to the file
             {
-                fout<<curr->word<<"="<<curr->freq<<"\n";
+                fout<<curr->word<<" "<<curr->freq<<"\n";
                 curr=curr->next;
             }
             fout.close(); // finalize
