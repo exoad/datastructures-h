@@ -98,7 +98,6 @@ ListNode* ListNode::remove()
     return prev==nullptr?this:prev;
 }
 
-
 ListNode* ListNode::remove(int position)
 {
     return position==0?remove():next->remove(position-1);
