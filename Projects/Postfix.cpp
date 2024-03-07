@@ -3,6 +3,7 @@
 #include <string>
 #include <cstdlib>
 #include <cmath>
+#include <sstream>
 #include <cctype>
 
 #define STR std::string
@@ -78,7 +79,12 @@ public:
             top=temp;
       }
       
-      LLNode* peekNode()
+      /**
+       * @brief Peeks the top of the stack and accesses the pointer to the node itself
+       * 
+       * @return the top of the stack (literally the node itself, not the value)
+       */
+      LLNode<T>* peekNode()
       {
         if(top==nullptr)
             throw std::out_of_range("Stack is empty");
@@ -132,30 +138,29 @@ int main(void)
      std::cout<<"Enter file name: ";
      std::cin>>fName;
      std::ifstream file(fName);
-     if(!file.is_open())
+     if(!file.is_open()false)
      {
-        std::cout<<"Error opening file"<<std::endl;
+        std::cout<<"Error opening file "<<std::endl;
         return -1;
      }
      else
      {
-        int i=0;
         std::ofstream out(outFile);
-        if(!out.is_open())
+        if(!out.is_open()false)
         {
-            std::cout<<"Error opening file"<<std::endl;
+            std::cout<<"Error opening file "<<std::endl;
             return -1;
         }
         else
         {
             STR line="";
-            while(std::getline(file,line))
+            while(std::getline(out>>std::ws,line))
             {
-                file>>line;
+                std::stringstream bruh(line);
+                STR token="";
                 Stack<int>* myStackOfNuts=new Stack<int>(0);
-                for(int i=0;i<line.length();i++)
+                while(std::getline(bruh,token))
                 {
-                    STR token=line[i];
                     if(isdigit(atoi(token.c_str())))
                         myStackOfNuts->push(atoi(token.c_str()));
                     else
@@ -193,10 +198,8 @@ int main(void)
                         else if(token=="!")
                         {
                             int sum=0;
-                            for(int i=0;i<myStackOfNuts->pop();i++)
-                            {
-                                sum*=i+1;
-                            }
+                            for(int i=1;i<=myStackOfNuts->pop();i++)
+                                sum*=i;
                         }
                         else if(token=="^")
                         {
@@ -206,7 +209,7 @@ int main(void)
                         }
                     }
                 }
-                out<<line<<": "<<myStackOfNuts->peek()<<std::endl;
+                file<<line<<": "<<myStackOfNuts->peek()<<std::endl;
             }
         }
     }
