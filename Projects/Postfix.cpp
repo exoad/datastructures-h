@@ -1,3 +1,8 @@
+/// \file Postfix.cpp
+/// \author Jack Meng
+/// \brief A program utilizing a stack to evaluate postfix expressions.
+/// \date 2024-03-16
+
 #include <iostream>
 #include <fstream>
 #include <string>
