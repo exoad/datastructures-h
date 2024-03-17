@@ -69,19 +69,24 @@ public:
         }
     }
 
-      /**
-       * @brief Push a new node onto the stack
-       *
-       * @param data The data to be stored in the new node
-       */
-      void push(T data)
-      {
-            LLNode<T>* temp=new LLNode<T>(data,top);
-            top=temp;
-      }
+    /**
+     * @brief Push a new node onto the stack
+     *
+     * @param data The data to be stored in the new node
+     */
+    void push(T data)
+    {
+        LLNode<T>* temp=new LLNode<T>(data,top);
+        top=temp;
+    }
 
-      LLNode* peekNode()
-      {
+    /**
+     * @brief Peeks the top of the stack and accesses the pointer to the node itself
+     *
+     * @return the top of the stack (literally the node itself, not the value)
+     */
+    LLNode<T>* peekNode()
+    {
         if(top==nullptr)
             throw std::out_of_range("Stack is empty on peekNode()");
         return top;
@@ -129,7 +134,7 @@ public:
 
 inline bool isNumber(STR& s)
 {
-   if(s.empty()||!isdigit(s[0])&&s[0]!='-'&&s[0]!='+')
+   if(s.empty()||!isdigit(s[0])&&s[0]!='-')
     return false;
    char* x;
    strtol(s.c_str(),&x,10);
@@ -138,21 +143,20 @@ inline bool isNumber(STR& s)
 
 int main(void)
 {
-     STR fName;
-     // get the file name and other stuffs
-     std::cout<<"Enter file name: ";
-     std::cin>>fName;
-     std::ifstream file(fName);
-     if(!file.is_open())
-     {
-        std::cout<<"Error opening file"<<std::endl;
+    STR fName;
+    // get the file name and other stuffs
+    std::cout<<"Enter file name: ";
+    std::cin>>fName;
+    std::ifstream file(fName);
+    if(!file.is_open())
+    {
+        std::cout<<"Error opening file "<<std::endl;
         return -1;
-     }
-     else
-     {
-        int i=0;
+    }
+    else
+    {
         std::ofstream out(outFile);
-        if(!out.is_open()false)
+        if(!out.is_open())
         {
             std::cout<<"Error opening file "<<std::endl;
             return -1;
@@ -160,15 +164,14 @@ int main(void)
         else
         {
             STR line="";
-            while(std::getline(out>>std::ws,line))
+            while(std::getline(file,line))
             {
                 std::stringstream bruh(line);
                 STR token="";
                 Stack<int>* myStackOfNuts=new Stack<int>(0);
-                for(int i=0;i<line.length();i++)
+                while(bruh>>token)
                 {
-                    STR token=line[i];
-                    if(isdigit(atoi(token.c_str())))
+                    if(isNumber(token))
                         myStackOfNuts->push(atoi(token.c_str()));
                     else
                     {
@@ -204,11 +207,11 @@ int main(void)
                         }
                         else if(token=="!")
                         {
-                            int sum=0;
-                            for(int i=0;i<myStackOfNuts->pop();i++)
-                            {
-                                sum*=i+1;
-                            }
+                            int base=myStackOfNuts->pop();
+                            int p=1;
+                            for(int i=1;i<=base;i++)
+                                p*=i;
+                            myStackOfNuts->push(p);
                         }
                         else if(token=="^")
                         {
@@ -218,7 +221,7 @@ int main(void)
                         }
                     }
                 }
-                file<<line<<": "<<myStackOfNuts->peek()<<std::endl;
+                out<<line<<": "<<myStackOfNuts->peek()<<std::endl;
             }
         }
     }
